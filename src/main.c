@@ -22,7 +22,16 @@ int main()
     while(!WindowShouldClose()){
 
         HandleButtonPress(&button);
+    /*
+        Have a keyboard shortcut for placing flags left shift has to be held down and is not a toggle.
 
+        As well as a toggle button that can be toggled by clicking on it with the mouse.
+
+        Need Tile struct that contains an enum representing it's state as well as the number of mines around it.
+        Need Grid struct containing a grid of tiles.
+
+        Need to split the tilemap texture into individual parts that can be rendered several times independantly.
+    */
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
