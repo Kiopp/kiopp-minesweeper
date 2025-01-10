@@ -25,6 +25,7 @@ set(INCLUDE_DIR inc)
 # Source files
 set(SOURCES
     src/main.c
+    src/Button.c
 )
 
 # Create executable
