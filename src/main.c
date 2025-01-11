@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "../inc/Button.h"
+#include "../inc/Tile.h"
 
 enum gameState {
     s_setup,
@@ -17,11 +18,17 @@ int main()
     // Game setup
     enum gameState state = s_setup;
     char btn_text[32] = "Start";
-    Button button = CreateButton( screen_width, screen_height, btn_text, 50);
+    TextButton button = CreateTextButton( screen_width, screen_height, btn_text, 50);
+
+    // Tile
+    Texture2D tilesheet = LoadTexture("../assets/kiopp_minesweeper_tilesheet.png");
+    TileMapTexture tile_textures = SplitTileMap(tilesheet);
+
+    Tile tile = CreateTile(screen_width, screen_height, tilesheet.width/2, tilesheet.height/2, tile_textures.tileMap[0], empty);
 
     while(!WindowShouldClose()){
 
-        HandleButtonPress(&button);
+        HandleTextButtonPress(&button);
     /*
         Have a keyboard shortcut for placing flags left shift has to be held down and is not a toggle.
 
@@ -38,14 +45,15 @@ int main()
         switch (state) 
         {
             case s_setup:
-                DrawButton(&button);
+                DrawTextButton(&button);
                 if (button.button_pressed) {
                     button.button_pressed = 0;
                     state = s_playing;
                 }
                 break;
             case s_playing:
-                DrawCircle(screen_width/2, screen_height/2, 100, GREEN);
+                // Draw the individual tiles (example)
+                DrawTile(&tile);
                 break;
             default:
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);

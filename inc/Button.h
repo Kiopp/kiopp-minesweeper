@@ -3,19 +3,29 @@
 
 #include "raylib.h"
 
-typedef struct Button {
+typedef struct TextButton {
     Rectangle rec;
     char text[32];
     int font_size;
     int text_width;
     Color button_color;
     int button_pressed;
-} Button;
+} TextButton;
 
-Button CreateButton(int screenWidth, int screenHeight, char text[32], int font_size);
+typedef struct ImageButton {
+    Texture2D image;
+    Rectangle rec;
+    Color button_color;
+    int button_pressed;
+} ImageButton;
 
-void HandleButtonPress(Button*);
+TextButton CreateTextButton(int screen_width, int screen_height, char text[32], int font_size);
+ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image);
 
-void DrawButton(Button*);
+void HandleTextButtonPress(TextButton*);
+void HandleImageButtonPress(ImageButton*);
+
+void DrawTextButton(TextButton*);
+void DrawImageButton(ImageButton*);
 
 #endif

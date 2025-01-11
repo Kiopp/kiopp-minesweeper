@@ -26,6 +26,7 @@ set(INCLUDE_DIR inc)
 set(SOURCES
     src/main.c
     src/Button.c
+    src/Tile.c
 )
 
 # Create executable

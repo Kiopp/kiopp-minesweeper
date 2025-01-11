@@ -2,10 +2,10 @@
 #include "raylib.h"
 #include <string.h>
 
-Button CreateButton(int screenWidth, int screenHeight, char text[32], int font_size) 
+TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], int font_size) 
 {
     // Declare new Button
-    Button button;
+    TextButton button;
 
     // Initialize Button values
     strcpy(button.text, text);
@@ -26,7 +26,27 @@ Button CreateButton(int screenWidth, int screenHeight, char text[32], int font_s
     return button;
 }
 
-void HandleButtonPress(Button* button)
+ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image) 
+{
+    // Declare new Button
+    ImageButton button;
+
+    // Initialize Button values
+    button.image = image;
+    button.button_color = WHITE; // No image hue change
+    button.button_pressed = 0;
+
+    button.rec = (Rectangle){
+        0, // Default position
+        0, // Default position
+        button_width, 
+        button_height
+        };
+
+    return button;
+}
+
+void HandleTextButtonPress(TextButton* button)
 {
     if (CheckCollisionPointRec(GetMousePosition(), button->rec)) {
         button->button_color = LIGHTGRAY;
@@ -41,7 +61,22 @@ void HandleButtonPress(Button* button)
     }
 }
 
-void DrawButton(Button* button)
+void HandleImageButtonPress(ImageButton* button)
+{
+    if (CheckCollisionPointRec(GetMousePosition(), button->rec)) {
+        button->button_color = LIGHTGRAY;
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            button->button_color = DARKGRAY;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            button->button_pressed = 1;
+        }
+    } else {
+        button->button_color = WHITE;
+    }
+}
+
+void DrawTextButton(TextButton* button)
 {
     DrawRectangleRec(button->rec, button->button_color);
 
@@ -53,5 +88,20 @@ void DrawButton(Button* button)
         text_y, 
         button->font_size, 
         BLACK
+        );
+}
+
+void DrawImageButton(ImageButton* button)
+{
+    int scale = 2;
+    Rectangle dest = (Rectangle){ 200, 200, button->rec.width * scale, button->rec.height * scale };
+
+    DrawTexturePro(
+        button->image, 
+        button->rec, 
+        dest, 
+        (Vector2){0,0}, 
+        0.0f, 
+        button->button_color
         );
 }
