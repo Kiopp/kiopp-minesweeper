@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "../inc/Button.h"
 #include "../inc/Tile.h"
+#include "../inc/Grid.h"
 
 enum gameState {
     s_setup,
@@ -24,7 +25,17 @@ int main()
     Texture2D tilesheet = LoadTexture("../assets/kiopp_minesweeper_tilesheet.png");
     TileMapTexture tile_textures = SplitTileMap(tilesheet);
 
-    Tile tile = CreateTile(screen_width, screen_height, tilesheet.width/2, tilesheet.height/2, tile_textures.tileMap[0], empty);
+    Tile tile = CreateTile(screen_width, screen_height, tilesheet.width/2, tilesheet.height/2, tile_textures.tileMap[2], empty);
+    tile.state = explored;
+    tile.mine_num = 9;
+
+    Tile** grid = CreateGrid(screen_width, screen_height, tilesheet.width/2, &tile_textures, 5, 5, 3);
+
+    int grid_cols = 5;
+    int grid_rows = 5;
+    int tile_size = tilesheet.width/2;
+    int scale = 4;
+    int tile_font = 20;
 
     while(!WindowShouldClose()){
 
@@ -39,6 +50,15 @@ int main()
 
         Need to split the tilemap texture into individual parts that can be rendered several times independantly.
     */
+
+        // Calculate total grid width and height
+        int grid_width = grid_cols * tile_size * scale;
+        int grid_height = grid_rows * tile_size * scale;
+
+        // Calculate starting position for the grid
+        int startX = screen_width/2 - grid_width/2;
+        int startY = screen_height/2 - grid_height/2;
+
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -52,8 +72,7 @@ int main()
                 }
                 break;
             case s_playing:
-                // Draw the individual tiles (example)
-                DrawTile(&tile);
+                DrawGameGrid(grid, grid_width, grid_height, startX, startY, grid_rows, grid_cols, tile_font, scale);
                 break;
             default:
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);

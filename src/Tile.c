@@ -50,7 +50,65 @@ Tile CreateTile(int screen_width, int screen_height, int width, int height, Text
     return tile;
 }
 
-void DrawTile(Tile* tile)
+Texture2D* GetTileImage(Tile* tile, TileMapTexture* texture){
+    if (tile->state == unexplored) {
+        return &texture->tileMap[1]; // Unexplored
+    }
+    else if (tile->state == flag) {
+        return &texture->tileMap[0]; // Flag
+    }
+    else if (tile->state == explored) {
+        if (tile->type == mine) return &texture->tileMap[3]; // Mine
+
+        return &texture->tileMap[2]; // Empty
+    }
+}
+
+void DrawTile(Tile* tile, Tuple_int position, int font_size, int scale)
 {
-    DrawImageButton(&tile->button);
+    DrawImageButton(&tile->button, position, scale);
+
+    if (tile->mine_num > 0 && tile->state == explored) {
+        Color text_color = BLACK;
+        switch (tile->mine_num) {
+            case 1:
+                text_color = BLUE;
+                break;
+            case 2:
+                text_color = GREEN;
+                break;
+            case 3:
+                text_color = RED;
+                break;
+            case 4:
+                text_color = DARKBLUE;
+                break;
+            case 5:
+                text_color = MAROON;
+                break;
+            case 6:
+                text_color = SKYBLUE;
+                break;
+            case 7:
+                text_color = PURPLE;
+                break;
+            case 8:
+                text_color = GRAY;
+                break;
+            default:
+                break;
+        }
+
+        char number[2] = "\0";
+        sprintf(number, "%d", tile->mine_num);
+
+        Rectangle dest = (Rectangle){ position.x, position.y, tile->button.rec.width * scale, tile->button.rec.height * scale };
+
+        // Calculate character position for centering
+        int textWidth = MeasureText(number, font_size);
+        int textX = dest.x + (dest.width - textWidth) / 2;
+        int textY = dest.y + (dest.height - font_size) / 2;
+        // Draw the character
+        DrawText(number, textX, textY, font_size, text_color); 
+    }
 }

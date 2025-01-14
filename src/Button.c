@@ -91,10 +91,9 @@ void DrawTextButton(TextButton* button)
         );
 }
 
-void DrawImageButton(ImageButton* button)
+void DrawImageButton(ImageButton* button, Tuple_int position, int scale)
 {
-    int scale = 2;
-    Rectangle dest = (Rectangle){ 200, 200, button->rec.width * scale, button->rec.height * scale };
+    Rectangle dest = (Rectangle){ position.x, position.y, button->rec.width * scale, button->rec.height * scale };
 
     DrawTexturePro(
         button->image, 
