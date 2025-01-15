@@ -6,11 +6,16 @@
 #include "kiopplib.h"
 
 typedef struct GameGrid {
-    Tile** grid;
+    Tile** tiles;
+    int cols;
+    int rows;
+    int tile_size;
+    int scale;
+    int tile_font;
 } GameGrid;
 
-Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTexture* tilemap, int dim_x, int dim_y, int num_mines);
+GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
 
-void DrawGameGrid(Tile** grid, int grid_width, int grid_height, int startX, int startY, int grid_rows, int grid_cols, int font_size, int scale);
+void DrawGameGrid(GameGrid grid, int grid_width, int grid_height, int startX, int startY);
 
 #endif

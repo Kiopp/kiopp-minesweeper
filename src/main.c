@@ -23,19 +23,20 @@ int main()
 
     // Tile
     Texture2D tilesheet = LoadTexture("../assets/kiopp_minesweeper_tilesheet.png");
-    TileMapTexture tile_textures = SplitTileMap(tilesheet);
+    TileMapTexture textures = SplitTileMap(tilesheet);
 
-    Tile tile = CreateTile(screen_width, screen_height, tilesheet.width/2, tilesheet.height/2, tile_textures.tileMap[2], empty);
-    tile.state = explored;
-    tile.mine_num = 9;
+    GameGrid grid = CreateGrid(
+        screen_width, 
+        screen_height, 
+        tilesheet.width/2, 
+        &textures, 
+        5, 
+        5, 
+        3, 
+        4, 
+        20
+        );
 
-    Tile** grid = CreateGrid(screen_width, screen_height, tilesheet.width/2, &tile_textures, 5, 5, 3);
-
-    int grid_cols = 5;
-    int grid_rows = 5;
-    int tile_size = tilesheet.width/2;
-    int scale = 4;
-    int tile_font = 20;
 
     while(!WindowShouldClose()){
 
@@ -52,8 +53,8 @@ int main()
     */
 
         // Calculate total grid width and height
-        int grid_width = grid_cols * tile_size * scale;
-        int grid_height = grid_rows * tile_size * scale;
+        int grid_width = grid.cols * grid.tile_size * grid.scale;
+        int grid_height = grid.rows * grid.tile_size * grid.scale;
 
         // Calculate starting position for the grid
         int startX = screen_width/2 - grid_width/2;
@@ -72,7 +73,7 @@ int main()
                 }
                 break;
             case s_playing:
-                DrawGameGrid(grid, grid_width, grid_height, startX, startY, grid_rows, grid_cols, tile_font, scale);
+                DrawGameGrid(grid, grid_width, grid_height, startX, startY);
                 break;
             default:
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);

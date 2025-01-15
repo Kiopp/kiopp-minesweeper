@@ -30,7 +30,7 @@ typedef struct TileMapTexture{
 
 TileMapTexture SplitTileMap(Texture2D tilemap);
 
-Texture2D* GetTileImage(Tile* tile, TileMapTexture* texture);
+Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures);
 
 Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type);
 

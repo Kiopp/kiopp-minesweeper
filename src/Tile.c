@@ -1,6 +1,5 @@
 #include "raylib.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include "../inc/Tile.h"
 
 TileMapTexture SplitTileMap(Texture2D tilesheet)
@@ -50,18 +49,19 @@ Tile CreateTile(int screen_width, int screen_height, int width, int height, Text
     return tile;
 }
 
-Texture2D* GetTileImage(Tile* tile, TileMapTexture* texture){
+Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures){
     if (tile->state == unexplored) {
-        return &texture->tileMap[1]; // Unexplored
+        return &textures->tileMap[1]; // Unexplored
     }
     else if (tile->state == flag) {
-        return &texture->tileMap[0]; // Flag
+        return &textures->tileMap[0]; // Flag
     }
     else if (tile->state == explored) {
-        if (tile->type == mine) return &texture->tileMap[3]; // Mine
+        if (tile->type == mine) return &textures->tileMap[3]; // Mine
 
-        return &texture->tileMap[2]; // Empty
-    }
+        return &textures->tileMap[2]; // Empty
+    } 
+    return &textures->tileMap[1]; // Unexplored
 }
 
 void DrawTile(Tile* tile, Tuple_int position, int font_size, int scale)

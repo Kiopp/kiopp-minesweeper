@@ -4,14 +4,14 @@
 #include <time.h>
 #include "../inc/kiopplib.h"
 
-Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTexture* textures, int dim_x, int dim_y, int num_mines)
+GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font)
 {
     // Allocate TileGrid memory
-    Tile** grid = (Tile**)malloc(sizeof(Tile*)*dim_x);
+    Tile** grid = (Tile**)malloc(sizeof(Tile*)*grid_cols);
     if (grid == NULL) { printf("Memory allocation for grid failed!\n"); exit(1); }
 
-    for (size_t i = 0; i < dim_x; i++) {
-        grid[i] = (Tile*)malloc(sizeof(Tile)*dim_y);
+    for (size_t i = 0; i < grid_cols; i++) {
+        grid[i] = (Tile*)malloc(sizeof(Tile)*grid_rows);
         if (grid[i] == NULL) { printf("Memory allocation for grid[i] failed!\n"); exit(1); }
     }
 
@@ -25,8 +25,8 @@ Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTe
     srand(time(0));
 
     // Keep track of used points to avoid duplicates
-    int *used_points = (int *)malloc(dim_x * dim_y * sizeof(int)); 
-    for (int i = 0; i < dim_x * dim_y; i++) {
+    int *used_points = (int *)malloc(grid_cols * grid_rows * sizeof(int)); 
+    for (int i = 0; i < grid_cols * grid_rows; i++) {
         used_points[i] = 0; // Initialize all points as unused
     }
 
@@ -35,9 +35,9 @@ Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTe
         int x, y;
         do {
             // Generate random coordinates within the grid
-            x = rand() % dim_x;
-            y = rand() % dim_y;
-            index = y * dim_x + x; // Calculate a unique index for each (x, y) pair
+            x = rand() % grid_cols;
+            y = rand() % grid_rows;
+            index = y * grid_cols + x; // Calculate a unique index for each (x, y) pair
         } while (used_points[index]); // Keep generating until an unused point is found
 
         // Mark the point as used
@@ -49,8 +49,8 @@ Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTe
     }
 
     // Create tiles
-    for (size_t x = 0; x < dim_x; x++) {
-        for (size_t y = 0; y < dim_y; y++) {
+    for (size_t x = 0; x < grid_cols; x++) {
+        for (size_t y = 0; y < grid_rows; y++) {
             // Declare and initialize variables
             enum tile_type type = empty;
             enum tile_state state = unexplored;
@@ -66,8 +66,8 @@ Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTe
             grid[x][y] = CreateTile(
                 screen_width, 
                 screen_height, 
-                tile_width, 
-                tile_width, 
+                tile_size, 
+                tile_size, 
                 textures->tileMap[1], 
                 type
                 );
@@ -77,21 +77,28 @@ Tile** CreateGrid(int screen_width, int screen_height, int tile_width, TileMapTe
     free(mine_indices);
     free(used_points);
 
-    return grid;
+    // Construct GameGrid
+    GameGrid gameGrid;
+    gameGrid.tiles = grid;
+    gameGrid.cols = grid_cols;
+    gameGrid.rows = grid_cols;
+    gameGrid.scale = scale;
+    gameGrid.tile_size = tile_size;
+    gameGrid.tile_font = tile_font;
+
+    return gameGrid;
 }
 
-void DrawGameGrid(Tile** grid, int grid_width, int grid_height, int startX, int startY, int grid_rows, int grid_cols, int font_size, int scale){
-
-    int tile_size = grid[0]->button.rec.width;
+void DrawGameGrid(GameGrid grid, int grid_width, int grid_height, int startX, int startY){
     // Draw the grid of rectangles
-    for (int row = 0; row < grid_rows; row++)
+    for (int row = 0; row < grid.rows; row++)
     {
-        for (int col = 0; col < grid_cols; col++)
+        for (int col = 0; col < grid.cols; col++)
         {
-            int x = startX + col * (tile_size * scale);
-            int y = startY + row * (tile_size * scale);
+            int x = startX + col * (grid.tile_size * grid.scale);
+            int y = startY + row * (grid.tile_size * grid.scale);
             Tuple_int position = (Tuple_int){x, y};
-            DrawTile(&grid[col][row], position, font_size, scale);
+            DrawTile(&grid.tiles[col][row], position, grid.tile_font, grid.scale);
         }
     }
 }
