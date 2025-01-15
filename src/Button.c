@@ -61,9 +61,10 @@ void HandleTextButtonPress(TextButton* button)
     }
 }
 
-void HandleImageButtonPress(ImageButton* button)
+void HandleImageButtonPress(ImageButton* button, int scale)
 {
-    if (CheckCollisionPointRec(GetMousePosition(), button->rec)) {
+    Rectangle dest = (Rectangle){ button->rec.x, button->rec.y, button->rec.width * scale, button->rec.height * scale };
+    if (CheckCollisionPointRec(GetMousePosition(), dest)) {
         button->button_color = LIGHTGRAY;
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             button->button_color = DARKGRAY;
@@ -91,16 +92,15 @@ void DrawTextButton(TextButton* button)
         );
 }
 
-void DrawImageButton(ImageButton* button, Vector2 position, int scale)
+void DrawImageButton(ImageButton* button, int scale)
 {
-    Rectangle dest = (Rectangle){ position.x, position.y, button->rec.width * scale, button->rec.height * scale };
-
+    Rectangle dest = (Rectangle){ button->rec.x, button->rec.y, button->rec.width * scale, button->rec.height * scale };
     DrawTexturePro(
-        button->image, 
-        button->rec, 
-        dest, 
-        (Vector2){0,0}, 
-        0.0f, 
+        button->image,
+        (Rectangle){0,0, button->rec.width, button->rec.height},
+        dest,
+        (Vector2){0,0},
+        0.0f,
         button->button_color
         );
 }

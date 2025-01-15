@@ -34,15 +34,17 @@ TileMapTexture SplitTileMap(Texture2D tilesheet)
     return tilemap_texture;
 }
 
-Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type)
+Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type, Vector2 position)
 {
     // Declare new tile
     Tile tile;
 
     // Assign values to tile
     tile.button = CreateImageButton(screen_width, screen_height, width, height, image);
+    tile.button.rec.x = position.x;
+    tile.button.rec.y = position.y;
     tile.type = type;
-
+    
     tile.state = unexplored; // Default
     tile.mine_num = 0; // Set 0 mines default
 
@@ -64,9 +66,9 @@ Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures){
     return &textures->tileMap[1]; // Unexplored
 }
 
-void DrawTile(Tile* tile, Vector2 position, int font_size, int scale)
+void DrawTile(Tile* tile, int font_size, int scale)
 {
-    DrawImageButton(&tile->button, position, scale);
+    DrawImageButton(&tile->button, scale);
 
     if (tile->mine_num > 0 && tile->state == explored) {
         Color text_color = BLACK;
@@ -102,7 +104,7 @@ void DrawTile(Tile* tile, Vector2 position, int font_size, int scale)
         char number[2] = "\0";
         sprintf(number, "%d", tile->mine_num);
 
-        Rectangle dest = (Rectangle){ position.x, position.y, tile->button.rec.width * scale, tile->button.rec.height * scale };
+        Rectangle dest = (Rectangle){ tile->button.rec.x, tile->button.rec.y, tile->button.rec.width * scale, tile->button.rec.height * scale };
 
         // Calculate character position for centering
         int textWidth = MeasureText(number, font_size);

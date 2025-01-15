@@ -23,9 +23,9 @@ TextButton CreateTextButton(int screen_width, int screen_height, char text[32], 
 ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image);
 
 void HandleTextButtonPress(TextButton*);
-void HandleImageButtonPress(ImageButton*);
+void HandleImageButtonPress(ImageButton*, int scale);
 
 void DrawTextButton(TextButton*);
-void DrawImageButton(ImageButton*, Vector2 position, int scale);
+void DrawImageButton(ImageButton*, int scale);
 
 #endif

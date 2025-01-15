@@ -40,25 +40,24 @@ int main()
 
     while(!WindowShouldClose()){
 
-        HandleTextButtonPress(&button);
+        switch (state) {
+            case s_setup:
+                HandleTextButtonPress(&button);
+                break;
+            case s_playing:
+                HandleGridTileButtons(&grid);
+                HandleGridTileButtonClicked(&grid, &textures);
+                break;
+            default:
+                break;
+        }
+        
+        
     /*
         Have a keyboard shortcut for placing flags left shift has to be held down and is not a toggle.
 
         As well as a toggle button that can be toggled by clicking on it with the mouse.
-
-        Need Tile struct that contains an enum representing it's state as well as the number of mines around it.
-        Need Grid struct containing a grid of tiles.
-
-        Need to split the tilemap texture into individual parts that can be rendered several times independantly.
     */
-
-        // Calculate total grid width and height
-        int grid_width = grid.cols * grid.tile_size * grid.scale;
-        int grid_height = grid.rows * grid.tile_size * grid.scale;
-
-        // Calculate starting position for the grid
-        int startX = screen_width/2 - grid_width/2;
-        int startY = screen_height/2 - grid_height/2;
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -73,7 +72,7 @@ int main()
                 }
                 break;
             case s_playing:
-                DrawGameGrid(grid, grid_width, grid_height, startX, startY);
+                DrawGameGrid(&grid);
                 break;
             default:
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);

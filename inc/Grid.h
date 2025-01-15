@@ -11,10 +11,18 @@ typedef struct GameGrid {
     int tile_size;
     int scale;
     int tile_font;
+    int width;
+    int height;
+    int start_x;
+    int start_y;
 } GameGrid;
 
 GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
 
-void DrawGameGrid(GameGrid grid, int grid_width, int grid_height, int startX, int startY);
+void HandleGridTileButtons(GameGrid* grid);
+
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
+
+void DrawGameGrid(GameGrid* grid);
 
 #endif

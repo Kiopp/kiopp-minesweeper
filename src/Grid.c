@@ -19,7 +19,13 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     Vector2* mine_indices = (Vector2*)malloc(sizeof(Vector2)*num_mines);
     if (mine_indices == NULL) { printf("Memory allocation for mine_indices failed!\n"); exit(1); }
 
-    
+    // Calculate total grid width and height
+    int grid_width = grid_cols * tile_size * scale;
+    int grid_height = grid_rows * tile_size * scale;
+
+    // Calculate starting position for the grid
+    int start_x = screen_width/2 - grid_width/2;
+    int start_y = screen_height/2 - grid_height/2;
 
     // Randomize mine locations
     srand(time(0));
@@ -69,9 +75,12 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
                 tile_size, 
                 tile_size, 
                 textures->tileMap[1], 
-                type
+                type,
+                (Vector2){
+                                    start_x + x * (tile_size * scale), 
+                                    start_y + y * (tile_size * scale)
+                                    }
                 );
-            printf("Created grid[%zu][%zu]\n", x, y);
         }
     }
     free(mine_indices);
@@ -85,20 +94,44 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     gameGrid.scale = scale;
     gameGrid.tile_size = tile_size;
     gameGrid.tile_font = tile_font;
+    gameGrid.start_x = start_x;
+    gameGrid.start_y = start_y;
+    gameGrid.width = grid_width;
+    gameGrid.height = grid_height;
 
     return gameGrid;
 }
 
-void DrawGameGrid(GameGrid grid, int grid_width, int grid_height, int startX, int startY){
-    // Draw the grid of rectangles
-    for (int row = 0; row < grid.rows; row++)
-    {
-        for (int col = 0; col < grid.cols; col++)
-        {
-            int x = startX + col * (grid.tile_size * grid.scale);
-            int y = startY + row * (grid.tile_size * grid.scale);
-            Vector2 position = (Vector2){x, y};
-            DrawTile(&grid.tiles[col][row], position, grid.tile_font, grid.scale);
+void HandleGridTileButtons(GameGrid* grid){
+    for (size_t x = 0; x < grid->cols; x++) {
+        for (size_t y = 0; y < grid->rows; y++) {
+            HandleImageButtonPress(&grid->tiles[x][y].button, grid->scale);
+        }
+    }
+}
+
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
+    for (size_t x = 0; x < grid->cols; x++) {
+        for (size_t y = 0; y < grid->rows; y++) {
+            if (grid->tiles[x][y].button.button_pressed == 1) {
+                grid->tiles[x][y].button.button_pressed = 0;
+                printf("Clicked on tile[%zu][%zu]\n", x, y);
+                grid->tiles[x][y].state = explored;
+                if (grid->tiles[x][y].type == mine) {
+                    grid->tiles[x][y].button.image = textures->tileMap[3]; // Mine tile
+                }
+                else {
+                    grid->tiles[x][y].button.image = textures->tileMap[2]; // Empty tile
+                }
+            }
+        }
+    }
+}
+
+void DrawGameGrid(GameGrid* grid){
+    for (int row = 0; row < grid->rows; row++){
+        for (int col = 0; col < grid->cols; col++){
+            DrawTile(&grid->tiles[col][row], grid->tile_font, grid->scale);
         }
     }
 }
