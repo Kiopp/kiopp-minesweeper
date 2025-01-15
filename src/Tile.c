@@ -64,7 +64,7 @@ Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures){
     return &textures->tileMap[1]; // Unexplored
 }
 
-void DrawTile(Tile* tile, Tuple_int position, int font_size, int scale)
+void DrawTile(Tile* tile, Vector2 position, int font_size, int scale)
 {
     DrawImageButton(&tile->button, position, scale);
 

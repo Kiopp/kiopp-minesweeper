@@ -34,6 +34,6 @@ Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures);
 
 Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type);
 
-void DrawTile(Tile* tile, Tuple_int position, int font_size, int scale);
+void DrawTile(Tile* tile, Vector2 position, int font_size, int scale);
 
 #endif

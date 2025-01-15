@@ -91,7 +91,7 @@ void DrawTextButton(TextButton* button)
         );
 }
 
-void DrawImageButton(ImageButton* button, Tuple_int position, int scale)
+void DrawImageButton(ImageButton* button, Vector2 position, int scale)
 {
     Rectangle dest = (Rectangle){ position.x, position.y, button->rec.width * scale, button->rec.height * scale };
 

@@ -1,8 +1,8 @@
 #include "../inc/Grid.h"
+#include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "../inc/kiopplib.h"
 
 GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font)
 {
@@ -16,7 +16,7 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     }
 
     // Allocate tuple memory
-    Tuple_int* mine_indices = (Tuple_int*)malloc(sizeof(Tuple_int)*num_mines);
+    Vector2* mine_indices = (Vector2*)malloc(sizeof(Vector2)*num_mines);
     if (mine_indices == NULL) { printf("Memory allocation for mine_indices failed!\n"); exit(1); }
 
     
@@ -97,7 +97,7 @@ void DrawGameGrid(GameGrid grid, int grid_width, int grid_height, int startX, in
         {
             int x = startX + col * (grid.tile_size * grid.scale);
             int y = startY + row * (grid.tile_size * grid.scale);
-            Tuple_int position = (Tuple_int){x, y};
+            Vector2 position = (Vector2){x, y};
             DrawTile(&grid.tiles[col][row], position, grid.tile_font, grid.scale);
         }
     }

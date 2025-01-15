@@ -1,7 +1,6 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "kiopplib.h"
 #include "raylib.h"
 
 typedef struct TextButton {
@@ -27,6 +26,6 @@ void HandleTextButtonPress(TextButton*);
 void HandleImageButtonPress(ImageButton*);
 
 void DrawTextButton(TextButton*);
-void DrawImageButton(ImageButton*, Tuple_int position, int scale);
+void DrawImageButton(ImageButton*, Vector2 position, int scale);
 
 #endif

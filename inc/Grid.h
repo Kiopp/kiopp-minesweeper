@@ -3,7 +3,6 @@
 
 #include "Tile.h"
 #include "Button.h"
-#include "kiopplib.h"
 
 typedef struct GameGrid {
     Tile** tiles;
