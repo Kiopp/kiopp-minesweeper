@@ -1,4 +1,4 @@
-#include "../inc/Grid.h"
+#include "Grid.h"
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h>
