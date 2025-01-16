@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include <stdio.h>
-#include "../inc/Tile.h"
+#include "Tile.h"
 
 TileMapTexture SplitTileMap(Texture2D tilesheet)
 {

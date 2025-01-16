@@ -1,4 +1,4 @@
-#include "../inc/Button.h"
+#include "Button.h"
 #include "raylib.h"
 #include <string.h>
 

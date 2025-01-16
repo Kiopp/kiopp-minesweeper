@@ -1,7 +1,7 @@
 #include "raylib.h"
-#include "../inc/Button.h"
-#include "../inc/Tile.h"
-#include "../inc/Grid.h"
+#include "Button.h"
+#include "Tile.h"
+#include "Grid.h"
 
 enum gameState {
     s_setup,
