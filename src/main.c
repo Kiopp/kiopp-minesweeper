@@ -5,7 +5,8 @@
 
 enum gameState {
     s_setup,
-    s_playing
+    s_playing,
+    s_game_over
 };
 
 int main()
@@ -30,12 +31,15 @@ int main()
         screen_height, 
         tilesheet.width/2, 
         &textures, 
-        5, 
-        5, 
-        5, 
-        4, 
-        40
+        16, 
+        16, 
+        48, 
+        2, 
+        25
         );
+
+
+    int flag_enable = 0;
 
     while(!WindowShouldClose()){
 
@@ -44,8 +48,15 @@ int main()
                 HandleTextButtonPress(&button);
                 break;
             case s_playing:
+                if (IsKeyDown(KEY_LEFT_SHIFT)) { 
+                    flag_enable = 1; 
+                } else {
+                    flag_enable = 0;
+                }
                 HandleGridTileButtons(&grid);
-                HandleGridTileButtonClicked(&grid, &textures);
+                HandleGridTileButtonClicked(&grid, &textures, flag_enable);
+                break;
+            case s_game_over:
                 break;
             default:
                 break;
@@ -72,7 +83,13 @@ int main()
                 break;
             case s_playing:
                 DrawGameGrid(&grid);
+                if (grid.game_over == 1) {
+                    state = s_game_over;
+                }
                 break;
+            case s_game_over:
+                DrawGameGrid(&grid);
+                DrawCircle(screen_width/2, screen_height/2, 100, RED);
             default:
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);
                 break;

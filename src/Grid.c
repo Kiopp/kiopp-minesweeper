@@ -116,6 +116,7 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     gameGrid.start_y = start_y;
     gameGrid.width = grid_width;
     gameGrid.height = grid_height;
+    gameGrid.game_over = 0;
 
     return gameGrid;
 }
@@ -128,19 +129,23 @@ void HandleGridTileButtons(GameGrid* grid){
     }
 }
 
-void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int flag_enable){
     for (size_t x = 0; x < grid->cols; x++) {
         for (size_t y = 0; y < grid->rows; y++) {
             if (grid->tiles[x][y].button.button_pressed == 1) {
                 grid->tiles[x][y].button.button_pressed = 0;
-                printf("Clicked on tile[%zu][%zu]\n", x, y);
-                grid->tiles[x][y].state = explored;
-                if (grid->tiles[x][y].type == mine) {
-                    grid->tiles[x][y].button.image = textures->tileMap[3]; // Mine tile
-                    // End the game
-                }
-                else {
-                    grid->tiles[x][y].button.image = textures->tileMap[2]; // Empty tile
+
+                // Check if click should place a flag
+                if (flag_enable && (grid->tiles[x][y].state == unexplored || grid->tiles[x][y].state == flag)) {
+                    if (grid->tiles[x][y].state == flag) {
+                        grid->tiles[x][y].button.image = textures->tileMap[1]; // Unexplored
+                        grid->tiles[x][y].state = unexplored;
+                    } else {
+                        grid->tiles[x][y].button.image = textures->tileMap[0]; // Flag
+                        grid->tiles[x][y].state = flag;
+                    }
+                } else {
+                    ExploreTile(grid, textures, x, y);
                 }
             }
         }
@@ -155,6 +160,33 @@ void DrawGameGrid(GameGrid* grid){
     }
 }
 
-void UpdateTiles(GameGrid* grid, int row, int col){
+// I know the row and col is flipped here and is weird. I made a mistake, but it works so I left it...
+void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col){
+    // If the tile is already revealed or flagged, do nothing
+    if (grid->tiles[row][col].state == explored || grid->tiles[row][col].state == flag) {
+        return;
+    }
 
+    if (grid->tiles[row][col].type == mine) {
+        grid->tiles[row][col].button.image = textures->tileMap[3]; // Mine tile
+        grid->tiles[row][col].state = explored;
+        grid->game_over = 1;
+        return;
+    }
+
+    // Reveal the tile
+    grid->tiles[row][col].state = explored;
+    grid->tiles[row][col].button.image = textures->tileMap[2];
+
+    // If the tile has no neighboring mines, recursively reveal its neighbors
+    if (grid->tiles[row][col].mine_num == 0) {
+        for (int i = row - 1; i <= row + 1; i++) {
+            for (int j = col - 1; j <= col + 1; j++) {
+                // Check boundaries and avoid revealing the clicked tile again
+                if (i >= 0 && i < grid->rows && j >= 0 && j < grid->cols && !(i == row && j == col)) {
+                    ExploreTile(grid, textures, i, j);
+                }
+            }
+        }
+    }
 }

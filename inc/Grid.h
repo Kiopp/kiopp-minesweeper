@@ -15,16 +15,17 @@ typedef struct GameGrid {
     int height;
     int start_x;
     int start_y;
+    int game_over;
 } GameGrid;
 
 GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
 
 void HandleGridTileButtons(GameGrid* grid);
 
-void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int flag_enable);
 
 void DrawGameGrid(GameGrid* grid);
 
-void UpdateTiles(GameGrid* grid, int row, int col);
+void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col);
 
 #endif
