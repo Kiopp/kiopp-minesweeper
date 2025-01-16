@@ -25,4 +25,6 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
 
 void DrawGameGrid(GameGrid* grid);
 
+void UpdateTiles(GameGrid* grid, int row, int col);
+
 #endif

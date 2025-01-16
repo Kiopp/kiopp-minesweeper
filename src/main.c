@@ -32,11 +32,10 @@ int main()
         &textures, 
         5, 
         5, 
-        3, 
+        5, 
         4, 
-        20
+        40
         );
-
 
     while(!WindowShouldClose()){
 
@@ -80,17 +79,7 @@ int main()
         }
         EndDrawing(); 
     }
-    CloseWindow(); // Close window and OpenGL context
 
-    /* Example scaled texture draw
-    Rectangle destRec = (Rectangle){ 0, 0, tileMap.width * scale, tileMap.height * scale};
-    DrawTexturePro(
-        tileMap, 
-        testRec, 
-        destRec, 
-        (Vector2){0, 0}, 
-        0, 
-        WHITE);
-    */
+    CloseWindow(); // Close window and OpenGL context
     return 0;
 }

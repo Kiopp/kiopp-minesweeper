@@ -83,6 +83,24 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
                 );
         }
     }
+
+    // Update num_mines for all tiles close to mines
+    for (size_t i = 0; i < num_mines; i++) {
+        // Loop through the 3x3 area surrounding each mine
+        for (int j = mine_indices[i].x - 1; j <= mine_indices[i].x + 1; j++) {
+            for (int k = mine_indices[i].y - 1; k <= mine_indices[i].y + 1; k++) {
+                // Skip the cell itself
+                if (j == mine_indices[i].x && k == mine_indices[i].y) {
+                    continue;
+                }
+                // Bounds checking to avoid accessing elements outside the array and skipping mines
+                if (j >= 0 && j < grid_cols && k >= 0 && k < grid_rows && grid[j][k].type == empty) {
+                    grid[j][k].mine_num++;
+                }
+            }
+        }   
+    }
+
     free(mine_indices);
     free(used_points);
 
@@ -119,6 +137,7 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
                 grid->tiles[x][y].state = explored;
                 if (grid->tiles[x][y].type == mine) {
                     grid->tiles[x][y].button.image = textures->tileMap[3]; // Mine tile
+                    // End the game
                 }
                 else {
                     grid->tiles[x][y].button.image = textures->tileMap[2]; // Empty tile
@@ -134,4 +153,8 @@ void DrawGameGrid(GameGrid* grid){
             DrawTile(&grid->tiles[col][row], grid->tile_font, grid->scale);
         }
     }
+}
+
+void UpdateTiles(GameGrid* grid, int row, int col){
+
 }
