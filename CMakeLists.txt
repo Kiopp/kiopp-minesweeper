@@ -30,6 +30,9 @@ set(SOURCES
     src/Grid.c
 )
 
+# clangd files
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Create executable
 add_executable(kiopp_mine ${SOURCES})
 
