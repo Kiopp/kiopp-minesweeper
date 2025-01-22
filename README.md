@@ -22,3 +22,4 @@ make && ./kiopp_mine
 3. Click "Configure" and choose your generator (e.g. "Visual Studio 2019").
 4. Click "Generate" to create the project files.
 5. Open the generated .sln solution in Visual Studio and Build the project from there.
+6. When running the program make sure the .exe file is located directly inside the build directory. The assets won't load otherwise.
