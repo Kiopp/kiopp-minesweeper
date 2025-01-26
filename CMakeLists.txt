@@ -28,6 +28,7 @@ set(SOURCES
     src/Button.c
     src/Tile.c
     src/Grid.c
+    src/TextBox.c
 )
 
 # clangd files

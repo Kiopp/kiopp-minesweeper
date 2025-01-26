@@ -150,9 +150,7 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int f
                     ExploreTile(grid, textures, x, y);
 
                     if (CheckWinCondition(grid)) {
-                        printf("WIN DETECTED!!!!\n");
                         grid->game_win = 1;
-                        printf("Handle game_win: %d\nHandle game_over: %d\n", grid->game_win, grid->game_over);
                     }
                 }
             }
