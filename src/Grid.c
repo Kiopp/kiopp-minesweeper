@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "Tile.h"
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -117,6 +118,7 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     gameGrid.width = grid_width;
     gameGrid.height = grid_height;
     gameGrid.game_over = 0;
+    gameGrid.game_win = 0;
 
     return gameGrid;
 }
@@ -146,6 +148,10 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int f
                     }
                 } else {
                     ExploreTile(grid, textures, x, y);
+
+                    if (CheckWinCondition(grid)) {
+                        grid->game_win = 1;
+                    }
                 }
             }
         }
@@ -167,6 +173,7 @@ void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col){
         return;
     }
 
+    // Check if explored tile is mine
     if (grid->tiles[row][col].type == mine) {
         grid->tiles[row][col].button.image = textures->tileMap[3]; // Mine tile
         grid->tiles[row][col].state = explored;
@@ -188,5 +195,23 @@ void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col){
                 }
             }
         }
+    }
+}
+
+int CheckWinCondition(GameGrid* grid){
+    int unrevealed_tiles = 0;
+    for (int i = 0; i < grid->cols; i++) {
+        for (int j = 0; j < grid->rows; j++) {
+            // Check if tile is flagged or unexplored
+            if ((grid->tiles[i][j].state == flag || grid->tiles[i][j].state == unexplored) && grid->tiles[i][j].type == empty) {
+                unrevealed_tiles++;
+            }
+        }
+    }
+
+    if (unrevealed_tiles == 0) {
+        return 1;
+    } else {
+        return 0;
     }
 }

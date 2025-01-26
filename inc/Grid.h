@@ -2,7 +2,6 @@
 #define GRID_H
 
 #include "Tile.h"
-#include "Button.h"
 
 typedef struct GameGrid {
     Tile** tiles;
@@ -16,6 +15,7 @@ typedef struct GameGrid {
     int start_x;
     int start_y;
     int game_over;
+    int game_win;
 } GameGrid;
 
 GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
@@ -27,5 +27,7 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int f
 void DrawGameGrid(GameGrid* grid);
 
 void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col);
+
+int CheckWinCondition(GameGrid* grid);
 
 #endif
