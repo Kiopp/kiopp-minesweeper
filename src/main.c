@@ -34,7 +34,7 @@ void CheckWindowSize(int* screen_width, int* screen_height){
     SetWindowSize(*screen_width, *screen_height);
 }
 
-void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* width_input, NumberBox* height_input, NumberBox* scale_input){
+void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
     int mouse_on_any_text = 0;
 
     // Update mouse_on_text and focused
@@ -46,37 +46,21 @@ void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* width_input, Numb
 
         if (num_mines_input->focused) {
             // Unfocus all other numboxes
-            width_input->focused = 0;
-            height_input->focused = 0;
+            grid_size_input->focused = 0;
             scale_input->focused = 0;
         }
     }
     
     
-    CheckMouseHover(width_input);
-    if (width_input->mouse_on_text) mouse_on_any_text = 1;
-    if (width_input->clicked) {
-        width_input->clicked = 0;
-        width_input->focused = !width_input->focused;
+    CheckMouseHover(grid_size_input);
+    if (grid_size_input->mouse_on_text) mouse_on_any_text = 1;
+    if (grid_size_input->clicked) {
+        grid_size_input->clicked = 0;
+        grid_size_input->focused = !grid_size_input->focused;
 
-        if (width_input->focused) {
+        if (grid_size_input->focused) {
             // Unfocus all other numboxes
             num_mines_input->focused = 0;
-            height_input->focused = 0;
-            scale_input->focused = 0;
-        }
-    }
-
-    CheckMouseHover(height_input);
-    if (height_input->mouse_on_text) mouse_on_any_text = 1;
-    if (height_input->clicked) {
-        height_input->clicked = 0;
-        height_input->focused = !height_input->focused;
-
-        if (height_input->focused) {
-            // Unfocus all other numboxes
-            num_mines_input->focused = 0;
-            width_input->focused = 0;
             scale_input->focused = 0;
         }
     }
@@ -90,15 +74,13 @@ void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* width_input, Numb
         if (scale_input->focused) {
             // Unfocus all other numboxes
             num_mines_input->focused = 0;
-            width_input->focused = 0;
-            height_input->focused = 0;
+            grid_size_input->focused = 0;
         }
     }
 
     // Update NumberBoxes
     UpdateNumberBox(num_mines_input);
-    UpdateNumberBox(width_input);
-    UpdateNumberBox(height_input);
+    UpdateNumberBox(grid_size_input);
     UpdateNumberBox(scale_input);
 
     // Update mouse cursor
@@ -109,7 +91,7 @@ void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* width_input, Numb
     
 }
 
-void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButton* start_button, NumberBox* num_mines_input, NumberBox* width_input, NumberBox* height_input, NumberBox* scale_input){
+void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButton* start_button, NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
     
     // Start button
     char btn_text[32] = "Start";
@@ -142,8 +124,8 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
         mine_label
         );
 
-    char width_label[50] = "Width";
-    *width_input = CreateNumberBox(
+    char grid_label[50] = "Gridsize";
+    *grid_size_input = CreateNumberBox(
         screen_width, 
         screen_height, 
         100, 
@@ -152,32 +134,17 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
         row1_offset,
         font_size, 
         grid_settings[e_cols],
-        width_label
+        grid_label
         );
 
-    char height_label[50] = "Height";
-    *height_input = CreateNumberBox(
-        screen_width, 
-        screen_height, 
-        100, 
-        40, 
-        col3_offset,
-        row1_offset,
-        font_size, 
-        grid_settings[e_rows],
-        height_label
-        );
-
-    // ----------------------------------------------------------
-    
     char scale_label[50] = "Scale";
     *scale_input = CreateNumberBox(
         screen_width, 
         screen_height, 
         100, 
         40, 
-        col2_offset,
-        row2_offset,
+        col3_offset,
+        row1_offset,
         font_size, 
         grid_settings[e_scale],
         scale_label
@@ -209,8 +176,7 @@ int main()
 
     // TextBox
     NumberBox num_mines_input;
-    NumberBox width_input;
-    NumberBox height_input;
+    NumberBox grid_size_input;
     NumberBox scale_input;
 
     // Grid
@@ -229,8 +195,7 @@ int main()
         grid_settings,
         &button, 
         &num_mines_input, 
-        &width_input, 
-        &height_input, 
+        &grid_size_input, 
         &scale_input
         );
 
@@ -240,12 +205,12 @@ int main()
         switch (state) {
             case s_setup:
                 HandleTextButtonPress(&button);
-                UpdateAllNumberBox(&num_mines_input, &width_input, &height_input, &scale_input);
+                UpdateAllNumberBox(&num_mines_input, &grid_size_input, &scale_input);
 
                 if (button.button_pressed) {
                     // Grid settings
-                    grid_cols = width_input.value;
-                    grid_rows = height_input.value;
+                    grid_cols = grid_size_input.value;
+                    grid_rows = grid_size_input.value;
                     num_mines = num_mines_input.value;
                     scale = scale_input.value;
                     tile_font = 10 * scale;
@@ -326,8 +291,7 @@ int main()
                         grid_settings,
                         &button, 
                         &num_mines_input, 
-                        &width_input, 
-                        &height_input, 
+                        &grid_size_input, 
                         &scale_input
                         );
                 }
@@ -347,8 +311,7 @@ int main()
                         grid_settings,
                         &button, 
                         &num_mines_input, 
-                        &width_input, 
-                        &height_input, 
+                        &grid_size_input, 
                         &scale_input
                         );
                 }
@@ -372,8 +335,7 @@ int main()
             case s_setup:
                 DrawTextButton(&button);
                 DrawNumberBox(&num_mines_input);
-                DrawNumberBox(&height_input);
-                DrawNumberBox(&width_input);
+                DrawNumberBox(&grid_size_input);
                 DrawNumberBox(&scale_input);
                 break;
 
