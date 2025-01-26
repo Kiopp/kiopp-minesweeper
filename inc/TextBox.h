@@ -14,10 +14,14 @@ typedef struct NumberBox{
     int font_size;
     int value;
     int mouse_on_text;
+    int clicked;
+    int focused;
     int frame_counter;
 } NumberBox;
 
 NumberBox CreateNumberBox(int screen_width, int screen_height, int box_width, int box_height, int x_offset, int y_offset, int font_size, int default_value, char* label);
+
+void CheckMouseHover(NumberBox* num_box);
 
 void UpdateNumberBox(NumberBox* num_box);
 

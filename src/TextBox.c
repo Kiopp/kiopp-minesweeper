@@ -20,18 +20,18 @@ NumberBox CreateNumberBox(int screen_width, int screen_height, int box_width, in
     box.frame_counter = 0;
     
     box.mouse_on_text = 0;
+    box.focused = 0;
+    box.clicked = 0;
 
     sprintf(box.number, "%d", default_value);
     box.number_max_len = 3;
     box.number_letter_count = strlen(box.number);
-    printf("number length: %d\n", box.number_letter_count);
 
     // Label text setup
     strcpy(box.label, label);
     box.label_max_len = 49;
     box.label_letter_count = strlen(box.label);
     
-
     return box;
 }
 
@@ -48,23 +48,28 @@ void DrawNumberBox(NumberBox* num_box){
     DrawText(num_box->label, (int)num_box->rec.x, (int)num_box->rec.y - num_box->font_size - 5, num_box->font_size, BLACK);
     
     // Draw blinking underscore char
-    if (num_box->mouse_on_text)
+    if (num_box->focused)
     {
-        if (((num_box->frame_counter/20)%2) == 0) DrawText("_", (int)num_box->rec.x + 8 + MeasureText(num_box->number, num_box->font_size), (int)num_box->rec.y + 5, 40, DARKGRAY);
+        if (((num_box->frame_counter/20)%2) == 0) DrawText("_", (int)num_box->rec.x + 8 + MeasureText(num_box->number, num_box->font_size), (int)num_box->rec.y + 10, num_box->font_size, DARKGRAY);
+        num_box->frame_counter++;
     }
 }
 
-void UpdateNumberBox(NumberBox* num_box){
+void CheckMouseHover(NumberBox* num_box){
     // Check cursor collition
-    if (CheckCollisionPointRec(GetMousePosition(), num_box->rec)) num_box->mouse_on_text = 1;
+    if (CheckCollisionPointRec(GetMousePosition(), num_box->rec)) {
+        if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+            num_box->clicked = 1;
+        }
+        num_box->mouse_on_text = 1;
+    }
     else num_box->mouse_on_text = 0;
+}
 
-    // Mouse hover effect
-    if (num_box->mouse_on_text)
+void UpdateNumberBox(NumberBox* num_box){
+    // Textbox focused effect
+    if (num_box->focused)
     {
-        // Set the window's cursor to the I-Beam
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-
         // Get char pressed (unicode character) on the queue
         int key = GetCharPressed();
 
@@ -97,5 +102,4 @@ void UpdateNumberBox(NumberBox* num_box){
             //printf("Current value: %d\n", num_box->value);
         }
     }
-    else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
