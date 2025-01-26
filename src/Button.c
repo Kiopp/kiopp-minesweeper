@@ -17,8 +17,8 @@ TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], in
     int padding = 20;
 
     button.rec = (Rectangle){
-        (float)screenWidth/2 - (float)button.text_width/2, 
-        (float)screenHeight/2 - (float)font_size/2, 
+        (float)screenWidth/2 - (float)button.text_width/2 - (float)padding/2, 
+        (float)screenHeight/2 - (float)font_size/2 - (float)padding/2, 
         button.text_width + padding, 
         font_size + padding
         };
