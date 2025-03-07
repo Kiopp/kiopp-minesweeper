@@ -17,9 +17,8 @@ make && ./kiopp_mine
 ```
 ### Windows
 To build the project on windows I recommend using cmake GUI with Visual Studio.
-1. Browse to your project's source directory from the cmake GUI.
+1. Browse to the project's source directory from the cmake GUI.
 2. Specify a directory for the build files (usually a separate "build" directory).   
 3. Click "Configure" and choose your generator (e.g. "Visual Studio 2019").
 4. Click "Generate" to create the project files.
 5. Open the generated .sln solution in Visual Studio and Build the project from there.
-6. When running the program make sure the .exe file is located directly inside the build directory. The assets won't load otherwise.
