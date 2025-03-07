@@ -22,6 +22,9 @@ message(STATUS "raylib_BINARY_DIR: ${raylib_BINARY_DIR}")
 # Include directory
 set(INCLUDE_DIR inc)
 
+# Include directory for assets
+set(ASSET_DIR assets/inc) 
+
 # Source files
 set(SOURCES
     src/main.c
@@ -29,6 +32,7 @@ set(SOURCES
     src/Tile.c
     src/Grid.c
     src/TextBox.c
+    assets/src/tilesheet.c
 )
 
 # clangd files
@@ -38,7 +42,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(kiopp_mine ${SOURCES})
 
 # Specify include directories
-target_include_directories(kiopp_mine PUBLIC ${INCLUDE_DIR})
+target_include_directories(kiopp_mine PUBLIC 
+    ${INCLUDE_DIR} 
+    ${ASSET_DIR}
+)
 
 # Link with raylib
 target_link_libraries(kiopp_mine PRIVATE raylib) 

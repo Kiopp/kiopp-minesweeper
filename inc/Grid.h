@@ -22,7 +22,7 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
 
 void HandleGridTileButtons(GameGrid* grid);
 
-void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int flag_enable);
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
 
 void DrawGameGrid(GameGrid* grid);
 

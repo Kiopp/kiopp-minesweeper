@@ -123,6 +123,16 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     return gameGrid;
 }
 
+void ToggleFlag(Tile* tile, TileMapTexture* textures){
+    if (tile->state == flag) {
+        tile->button.image = textures->tileMap[1]; // Unexplored
+        tile->state = unexplored;
+    } else {
+        tile->button.image = textures->tileMap[0]; // Flag
+        tile->state = flag;
+    }
+}
+
 void HandleGridTileButtons(GameGrid* grid){
     for (size_t x = 0; x < grid->cols; x++) {
         for (size_t y = 0; y < grid->rows; y++) {
@@ -131,21 +141,25 @@ void HandleGridTileButtons(GameGrid* grid){
     }
 }
 
-void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures, int flag_enable){
+void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
     for (size_t x = 0; x < grid->cols; x++) {
         for (size_t y = 0; y < grid->rows; y++) {
+            // Right click flag toggle
+            if (grid->tiles[x][y].button.toggle_flag == 1) {
+                grid->tiles[x][y].button.toggle_flag = 0;
+
+                // Check if click can place a flag
+                if (grid->tiles[x][y].state == unexplored || grid->tiles[x][y].state == flag) {
+                    ToggleFlag(&grid->tiles[x][y], textures);
+                }
+            }
+            
             if (grid->tiles[x][y].button.button_pressed == 1) {
                 grid->tiles[x][y].button.button_pressed = 0;
 
                 // Check if click should place a flag
-                if (flag_enable && (grid->tiles[x][y].state == unexplored || grid->tiles[x][y].state == flag)) {
-                    if (grid->tiles[x][y].state == flag) {
-                        grid->tiles[x][y].button.image = textures->tileMap[1]; // Unexplored
-                        grid->tiles[x][y].state = unexplored;
-                    } else {
-                        grid->tiles[x][y].button.image = textures->tileMap[0]; // Flag
-                        grid->tiles[x][y].state = flag;
-                    }
+                if (IsKeyDown(KEY_LEFT_SHIFT) && (grid->tiles[x][y].state == unexplored || grid->tiles[x][y].state == flag)) {
+                    ToggleFlag(&grid->tiles[x][y], textures);
                 } else {
                     ExploreTile(grid, textures, x, y);
 

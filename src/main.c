@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "Grid.h"
 #include "TextBox.h"
+#include "tilesheet.h"
 #include <stdio.h>
 
 enum gameState {
@@ -163,7 +164,6 @@ int main()
     enum gameState state = s_setup;
 
     // Misc
-    int flag_enable = 0;
 
     // Buttons
     char btn_restart_text[32] = "Retry";
@@ -171,7 +171,14 @@ int main()
     TextButton restart_button;
 
     // Tile
-    Texture2D tilesheet = LoadTexture("../assets/kiopp_minesweeper_tilesheet.png");
+    Image image = { 
+        .data = image_data, 
+        .width = image_width, 
+        .height = image_height, 
+        .mipmaps = 1, 
+        .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 
+    };
+    Texture2D tilesheet = LoadTextureFromImage(image);
     TileMapTexture textures = SplitTileMap(tilesheet);
 
     // TextBox
@@ -254,16 +261,9 @@ int main()
                 break;
 
             case s_playing:
-                // Handle flag keybind
-                if (IsKeyDown(KEY_LEFT_SHIFT)) { 
-                    flag_enable = 1; 
-                } else {
-                    flag_enable = 0;
-                }
-
                 // Handle tiles
                 HandleGridTileButtons(&grid);
-                HandleGridTileButtonClicked(&grid, &textures, flag_enable);
+                HandleGridTileButtonClicked(&grid, &textures);
 
                 // Check game over condition
                 if (grid.game_over == 1) {
@@ -320,11 +320,6 @@ int main()
             default:
                 break;
         }
-        
-        
-    /*
-        Add toggle button that can be toggled by clicking on it with the mouse.
-    */
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
