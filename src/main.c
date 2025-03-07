@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "Grid.h"
 #include "TextBox.h"
+#include "tilesheet.h"
 #include <stdio.h>
 
 enum gameState {
@@ -170,7 +171,14 @@ int main()
     TextButton restart_button;
 
     // Tile
-    Texture2D tilesheet = LoadTexture("../assets/kiopp_minesweeper_tilesheet.png");
+    Image image = { 
+        .data = image_data, 
+        .width = image_width, 
+        .height = image_height, 
+        .mipmaps = 1, 
+        .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8 
+    };
+    Texture2D tilesheet = LoadTextureFromImage(image);
     TileMapTexture textures = SplitTileMap(tilesheet);
 
     // TextBox
