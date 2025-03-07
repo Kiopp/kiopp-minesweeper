@@ -35,6 +35,7 @@ ImageButton CreateImageButton(int screen_width, int screen_height, int button_wi
     button.image = image;
     button.button_color = WHITE; // No image hue change
     button.button_pressed = 0;
+    button.toggle_flag = 0;
 
     button.rec = (Rectangle){
         0, // Default position
@@ -66,11 +67,20 @@ void HandleImageButtonPress(ImageButton* button, int scale)
     Rectangle dest = (Rectangle){ button->rec.x, button->rec.y, button->rec.width * scale, button->rec.height * scale };
     if (CheckCollisionPointRec(GetMousePosition(), dest)) {
         button->button_color = LIGHTGRAY;
+        // Left mouse button click
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             button->button_color = DARKGRAY;
         }
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             button->button_pressed = 1;
+        }
+
+        // Right mouse button click
+        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+            button->button_color = DARKGRAY;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
+            button->toggle_flag = 1;
         }
     } else {
         button->button_color = WHITE;

@@ -17,6 +17,7 @@ typedef struct ImageButton {
     Rectangle rec;
     Color button_color;
     int button_pressed;
+    int toggle_flag;
 } ImageButton;
 
 TextButton CreateTextButton(int screen_width, int screen_height, char text[32], int font_size);
