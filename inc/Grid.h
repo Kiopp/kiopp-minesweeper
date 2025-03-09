@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include "Tile.h"
+#include "raylib.h"
 
 typedef struct GameGrid {
     Tile** tiles;
@@ -18,13 +19,13 @@ typedef struct GameGrid {
     int game_win;
 } GameGrid;
 
-GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
+GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font);
 
-void HandleGridTileButtons(GameGrid* grid);
+void HandleGridTileButtons(GameGrid* grid, Camera2D camera);
 
 void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
 
-void DrawGameGrid(GameGrid* grid);
+void DrawGameGrid(GameGrid* grid, float zoom);
 
 void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col);
 

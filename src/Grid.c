@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 
-GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font)
+GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font)
 {
     // Allocate TileGrid memory
     Tile** grid = (Tile**)malloc(sizeof(Tile*)*grid_cols);
@@ -106,19 +106,19 @@ GameGrid CreateGrid(int screen_width, int screen_height, int tile_size, TileMapT
     free(used_points);
 
     // Construct GameGrid
-    GameGrid gameGrid;
-    gameGrid.tiles = grid;
-    gameGrid.cols = grid_cols;
-    gameGrid.rows = grid_cols;
-    gameGrid.scale = scale;
-    gameGrid.tile_size = tile_size;
-    gameGrid.tile_font = tile_font;
-    gameGrid.start_x = start_x;
-    gameGrid.start_y = start_y;
-    gameGrid.width = grid_width;
-    gameGrid.height = grid_height;
-    gameGrid.game_over = 0;
-    gameGrid.game_win = 0;
+    GameGrid* gameGrid = (GameGrid*)malloc(sizeof(GameGrid));
+    gameGrid->tiles = grid;
+    gameGrid->cols = grid_cols;
+    gameGrid->rows = grid_cols;
+    gameGrid->scale = scale;
+    gameGrid->tile_size = tile_size;
+    gameGrid->tile_font = tile_font;
+    gameGrid->start_x = start_x;
+    gameGrid->start_y = start_y;
+    gameGrid->width = grid_width;
+    gameGrid->height = grid_height;
+    gameGrid->game_over = 0;
+    gameGrid->game_win = 0;
 
     return gameGrid;
 }
@@ -133,10 +133,10 @@ void ToggleFlag(Tile* tile, TileMapTexture* textures){
     }
 }
 
-void HandleGridTileButtons(GameGrid* grid){
+void HandleGridTileButtons(GameGrid* grid, Camera2D camera){
     for (size_t x = 0; x < grid->cols; x++) {
         for (size_t y = 0; y < grid->rows; y++) {
-            HandleImageButtonPress(&grid->tiles[x][y].button, grid->scale);
+            HandleImageButtonPress(&grid->tiles[x][y].button, grid->scale, camera);
         }
     }
 }
@@ -172,10 +172,10 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
     }
 }
 
-void DrawGameGrid(GameGrid* grid){
+void DrawGameGrid(GameGrid* grid, float zoom){
     for (int row = 0; row < grid->rows; row++){
         for (int col = 0; col < grid->cols; col++){
-            DrawTile(&grid->tiles[col][row], grid->tile_font, grid->scale);
+            DrawTile(&grid->tiles[col][row], grid->tile_font, grid->scale, zoom);
         }
     }
 }

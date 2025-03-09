@@ -62,10 +62,16 @@ void HandleTextButtonPress(TextButton* button)
     }
 }
 
-void HandleImageButtonPress(ImageButton* button, int scale)
+void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera)
 {
-    Rectangle dest = (Rectangle){ button->rec.x, button->rec.y, button->rec.width * scale, button->rec.height * scale };
-    if (CheckCollisionPointRec(GetMousePosition(), dest)) {
+    Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), camera); // Transform mouse position
+    Rectangle dest = (Rectangle){ 
+        button->rec.x * camera.zoom, 
+        button->rec.y * camera.zoom, 
+        button->rec.width * scale * camera.zoom, 
+        button->rec.height * scale * camera.zoom
+    };
+    if (CheckCollisionPointRec(mouse_pos, dest)) {
         button->button_color = LIGHTGRAY;
         // Left mouse button click
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -102,9 +108,14 @@ void DrawTextButton(TextButton* button)
         );
 }
 
-void DrawImageButton(ImageButton* button, int scale)
+void DrawImageButton(ImageButton* button, int scale, float zoom)
 {
-    Rectangle dest = (Rectangle){ button->rec.x, button->rec.y, button->rec.width * scale, button->rec.height * scale };
+    Rectangle dest = (Rectangle){ 
+        button->rec.x * zoom, 
+        button->rec.y * zoom, 
+        button->rec.width * scale * zoom, 
+        button->rec.height * scale * zoom 
+    };
     DrawTexturePro(
         button->image,
         (Rectangle){0,0, button->rec.width, button->rec.height},

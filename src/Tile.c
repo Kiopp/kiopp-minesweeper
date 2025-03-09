@@ -66,9 +66,9 @@ Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures){
     return &textures->tileMap[1]; // Unexplored
 }
 
-void DrawTile(Tile* tile, int font_size, int scale)
+void DrawTile(Tile* tile, int font_size, int scale, float zoom)
 {
-    DrawImageButton(&tile->button, scale);
+    DrawImageButton(&tile->button, scale, zoom);
 
     if (tile->mine_num > 0 && tile->state == explored) {
         Color text_color = BLACK;
@@ -104,13 +104,19 @@ void DrawTile(Tile* tile, int font_size, int scale)
         char number[2] = "\0";
         sprintf(number, "%d", tile->mine_num);
 
-        Rectangle dest = (Rectangle){ tile->button.rec.x, tile->button.rec.y, tile->button.rec.width * scale, tile->button.rec.height * scale };
+        Rectangle dest = (Rectangle){ 
+            tile->button.rec.x * zoom, 
+            tile->button.rec.y * zoom, 
+            tile->button.rec.width * scale * zoom, 
+            tile->button.rec.height * scale * zoom 
+        };
 
         // Calculate character position for centering
-        int textWidth = MeasureText(number, font_size);
+        int zoomed_font_size = font_size * zoom;
+        int textWidth = MeasureText(number, zoomed_font_size);
         int textX = dest.x + (dest.width - textWidth) / 2;
-        int textY = dest.y + (dest.height - font_size) / 2;
+        int textY = dest.y + (dest.height - zoomed_font_size) / 2;
         // Draw the character
-        DrawText(number, textX, textY, font_size, text_color); 
+        DrawText(number, textX, textY, zoomed_font_size, text_color); 
     }
 }

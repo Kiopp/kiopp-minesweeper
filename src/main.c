@@ -1,5 +1,6 @@
 #include "TextBox.h"
 #include "raylib.h"
+#include "raymath.h"
 #include "Button.h"
 #include "Tile.h"
 #include "Grid.h"
@@ -155,6 +156,8 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
 int main()
 {
     // Window setup
+    const int max_screen_width = 1280;
+    const int max_screen_height = 1280;
     int screen_width = 1280;
     int screen_height = 720;
     InitWindow(screen_width, screen_height, "Kiopp Minesweeper");
@@ -163,7 +166,17 @@ int main()
     // Game setup
     enum gameState state = s_setup;
 
-    // Misc
+    // Camera
+    Camera2D camera = {
+        .offset = {0, 0},
+        .target = {0, 0},
+        .rotation = 0,
+        .zoom = 1.0f
+    };
+    float zoom = 1.0f;
+
+    // Fullscreen
+    bool isFullscreen = false;
 
     // Buttons
     char btn_restart_text[32] = "Retry";
@@ -187,7 +200,7 @@ int main()
     NumberBox scale_input;
 
     // Grid
-    GameGrid grid;
+    GameGrid* grid;
     int tile_size = tilesheet.width/2;
     int grid_cols = 1;
     int grid_rows = 1;
@@ -207,7 +220,7 @@ int main()
         );
 
     while(!WindowShouldClose()){
-
+        
         // Update state mashine
         switch (state) {
             case s_setup:
@@ -243,6 +256,8 @@ int main()
 
                     screen_width = grid_width + 200; // grid_width + padding
                     screen_height = grid_height + 200; // grid_height + padding
+                    if (screen_width > max_screen_width) screen_width = max_screen_width;
+                    if (screen_height > max_screen_height) screen_height = max_screen_height;
                     SetWindowSize(screen_width, screen_height);
 
                     // Generate grid
@@ -261,19 +276,56 @@ int main()
                 break;
 
             case s_playing:
+                // Panning
+                if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)) {
+                    Vector2 mouseDelta = {
+                        GetMouseDelta().x,
+                        GetMouseDelta().y
+                    };
+                    camera.offset.x += mouseDelta.x;
+                    camera.offset.y += mouseDelta.y;
+                }
+
+                // Zoom
+                float wheelMove = GetMouseWheelMove();
+                if (wheelMove != 0) {
+                    Vector2 mouse_pos_before_zoom = GetScreenToWorld2D(GetMousePosition(), camera); // Mouse position before zoom
+                    float zoomIncrement = 0.05f;
+                    if (wheelMove > 0) {
+                        zoom += zoomIncrement;
+                    } else {
+                        zoom -= zoomIncrement;
+                    }
+                    if (zoom < 0.5f) zoom = 0.5f;
+                    if (zoom > 3.0f) zoom = 3.0f;
+
+                    camera.zoom = zoom;
+
+                    Vector2 mouse_pos_after_zoom = GetScreenToWorld2D(GetMousePosition(), camera); // Mouse position after zoom
+                    Vector2 offset_diff = Vector2Subtract(mouse_pos_before_zoom, mouse_pos_after_zoom); // Calculate difference
+                    
+                    camera.target = Vector2Add(camera.target, offset_diff); // Adjust camera offset
+                }
+
                 // Handle tiles
-                HandleGridTileButtons(&grid);
-                HandleGridTileButtonClicked(&grid, &textures);
+                HandleGridTileButtons(grid, camera);
+                HandleGridTileButtonClicked(grid, &textures);
 
                 // Check game over condition
-                if (grid.game_over == 1) {
+                if (grid->game_over == 1) {
                     state = s_game_over;
                     restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50);
                 }
-                if (grid.game_win == 1) {
+                if (grid->game_win == 1) {
                     state = s_win;
                     restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50);
                 } 
+
+                // Fullscreen Toggle
+                if (IsKeyPressed(KEY_F11)) {
+                    isFullscreen = !isFullscreen;
+                    ToggleFullscreen();
+                }
                 
                 break;
 
@@ -335,17 +387,21 @@ int main()
                 break;
 
             case s_playing:
-                DrawGameGrid(&grid);
+                // Apply camera offset and zoom
+                BeginMode2D(camera);
+            
+                DrawGameGrid(grid, zoom);
+                EndMode2D();
                 break;
 
             case s_win:
-                DrawGameGrid(&grid);
+                DrawGameGrid(grid, zoom);
                 DrawCircle(screen_width/2, screen_height/2, 100, GREEN);
                 DrawTextButton(&restart_button);
                 break;
 
             case s_game_over:
-                DrawGameGrid(&grid);
+                DrawGameGrid(grid, zoom);
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);
                 DrawTextButton(&restart_button);
                 break;
