@@ -25,7 +25,7 @@ void HandleGridTileButtons(GameGrid* grid, Camera2D camera);
 
 void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
 
-void DrawGameGrid(GameGrid* grid, float zoom);
+void DrawGameGrid(GameGrid* grid, int screen_width, int screen_height, float zoom, Camera2D camera);
 
 void ExploreTile(GameGrid* grid, TileMapTexture* textures, int row, int col);
 

@@ -173,10 +173,35 @@ void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures){
     }
 }
 
-void DrawGameGrid(GameGrid* grid, float zoom){
+void DrawGameGrid(GameGrid* grid, int screen_width, int screen_height, float zoom, Camera2D camera){
+    // Determine the camera's viewport in world coordinates.
+    Vector2 topLeft = GetScreenToWorld2D((Vector2){ 0, 0 }, camera);
+    Vector2 bottomRight = GetScreenToWorld2D((Vector2){ screen_width, screen_height }, camera);
+
+    // Adjust for zoom to get the correct viewport size
+    Rectangle viewport = {
+        topLeft.x,
+        topLeft.y,
+        bottomRight.x - topLeft.x,
+        bottomRight.y - topLeft.y
+    };
+
     for (int row = 0; row < grid->rows; row++){
         for (int col = 0; col < grid->cols; col++){
-            DrawTile(&grid->tiles[col][row], grid->tile_font, grid->scale, zoom);
+            Tile* tile = &grid->tiles[col][row];
+
+            // Check if the tile's bounding box intersects with the viewport.
+            Rectangle tileRect = {
+                tile->button.rec.x * camera.zoom,
+                tile->button.rec.y * camera.zoom,
+                tile->button.rec.width * grid->scale * camera.zoom,
+                tile->button.rec.height * grid->scale * camera.zoom
+            };
+
+            if (CheckCollisionRecs(tileRect, viewport)) {
+                // Only draw tiles that intersect.
+                DrawTile(tile, grid->tile_font, grid->scale, zoom);
+            }
         }
     }
 }

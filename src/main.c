@@ -388,21 +388,25 @@ int main()
                 break;
 
             case s_playing:
-                // Apply camera offset and zoom
                 BeginMode2D(camera);
-            
-                DrawGameGrid(grid, zoom);
+                DrawGameGrid(grid, screen_width, screen_height, zoom, camera);
                 EndMode2D();
                 break;
 
             case s_win:
-                DrawGameGrid(grid, zoom);
+                BeginMode2D(camera);
+                DrawGameGrid(grid, screen_width, screen_height, zoom, camera);
+                EndMode2D();
+
                 DrawCircle(screen_width/2, screen_height/2, 100, GREEN);
                 DrawTextButton(&restart_button, screen_width, screen_height);
                 break;
 
             case s_game_over:
-                DrawGameGrid(grid, zoom);
+                BeginMode2D(camera);
+                DrawGameGrid(grid, screen_width, screen_height, zoom, camera);
+                EndMode2D();
+
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);
                 DrawTextButton(&restart_button, screen_width, screen_height);
                 break;
