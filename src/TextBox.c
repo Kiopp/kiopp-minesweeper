@@ -14,15 +14,22 @@ NumberBox CreateNumberBox(int screen_width, int screen_height, int box_width, in
         MeasureText(label, font_size), 
         box_height
         };
+
+    // Offset
+    box.x_offset = x_offset;
+    box.y_offset = y_offset;
     
+    // Misc setup
     box.font_size = font_size;
     box.value = default_value;
+
+    // Mouse event variables
     box.frame_counter = 0;
-    
     box.mouse_on_text = 0;
     box.focused = 0;
     box.clicked = 0;
-
+    
+    // Number text setup
     sprintf(box.number, "%d", default_value);
     box.number_max_len = 3;
     box.number_letter_count = strlen(box.number);
@@ -35,7 +42,11 @@ NumberBox CreateNumberBox(int screen_width, int screen_height, int box_width, in
     return box;
 }
 
-void DrawNumberBox(NumberBox* num_box){
+void DrawNumberBox(NumberBox* num_box, int screen_width, int screen_height){
+    // Update box position
+    num_box->rec.x = (float)(screen_width-MeasureText(num_box->label, num_box->font_size))/2 + num_box->x_offset; 
+    num_box->rec.y = (float)(screen_height-num_box->rec.height)/2 + num_box->y_offset;
+    
     // Draw box
     DrawRectangleRec(num_box->rec, LIGHTGRAY);
 

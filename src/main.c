@@ -28,8 +28,8 @@ void CheckWindowSize(int* screen_width, int* screen_height){
     if (*screen_width < 1280) {
         *screen_width = 1280;
     }
-    if (*screen_height < 720) {
-        *screen_height = 720;
+    if (*screen_height < 1280) {
+        *screen_height = 1280;
     }
 
     // Update window size
@@ -101,7 +101,8 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
         screen_width, 
         screen_height, 
         btn_text, 
-        50
+        50,
+        20
         );
 
     // Number boxes
@@ -160,6 +161,7 @@ int main()
     const int max_screen_height = 1280;
     int screen_width = 1280;
     int screen_height = 720;
+    SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     InitWindow(screen_width, screen_height, "Kiopp Minesweeper");
     SetTargetFPS(60);
 
@@ -220,7 +222,24 @@ int main()
         );
 
     while(!WindowShouldClose()){
+        // Fullscreen Toggle (always available)
+        if (IsKeyPressed(KEY_F11)) {
+            isFullscreen = !isFullscreen;
+            if (isFullscreen) {
+                int monitor = GetCurrentMonitor();
+                SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+            } else {
+                SetWindowSize(1280, 720);
+            }
+            ToggleFullscreen();
+        }
+
+        if(IsWindowResized()){
+            screen_width = GetScreenWidth();
+            screen_height = GetScreenHeight();
+        }
         
+
         // Update state mashine
         switch (state) {
             case s_setup:
@@ -249,16 +268,6 @@ int main()
                         break;
                     }
                     state = s_playing;
-
-                    // Change window size
-                    int grid_width = grid_cols * tile_size * scale;
-                    int grid_height = grid_rows * tile_size * scale;
-
-                    screen_width = grid_width + 200; // grid_width + padding
-                    screen_height = grid_height + 200; // grid_height + padding
-                    if (screen_width > max_screen_width) screen_width = max_screen_width;
-                    if (screen_height > max_screen_height) screen_height = max_screen_height;
-                    SetWindowSize(screen_width, screen_height);
 
                     // Generate grid
                     grid = CreateGrid(
@@ -314,18 +323,12 @@ int main()
                 // Check game over condition
                 if (grid->game_over == 1) {
                     state = s_game_over;
-                    restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50);
+                    restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50, 20);
                 }
                 if (grid->game_win == 1) {
                     state = s_win;
-                    restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50);
+                    restart_button = CreateTextButton( screen_width, screen_height, btn_restart_text, 50, 20);
                 } 
-
-                // Fullscreen Toggle
-                if (IsKeyPressed(KEY_F11)) {
-                    isFullscreen = !isFullscreen;
-                    ToggleFullscreen();
-                }
                 
                 break;
 
@@ -336,7 +339,6 @@ int main()
                     restart_button.button_pressed = 0;
                     state = s_setup;
 
-                    CheckWindowSize(&screen_width, &screen_height);
                     ResetGame(
                         screen_width, 
                         screen_height, 
@@ -356,7 +358,6 @@ int main()
                     restart_button.button_pressed = 0;
                     state = s_setup;
 
-                    CheckWindowSize(&screen_width, &screen_height);
                     ResetGame(
                         screen_width, 
                         screen_height, 
@@ -380,10 +381,10 @@ int main()
         switch (state) 
         {
             case s_setup:
-                DrawTextButton(&button);
-                DrawNumberBox(&num_mines_input);
-                DrawNumberBox(&grid_size_input);
-                DrawNumberBox(&scale_input);
+                DrawTextButton(&button, screen_width, screen_height);
+                DrawNumberBox(&num_mines_input, screen_width, screen_height);
+                DrawNumberBox(&grid_size_input, screen_width, screen_height);
+                DrawNumberBox(&scale_input, screen_width, screen_height);
                 break;
 
             case s_playing:
@@ -397,13 +398,13 @@ int main()
             case s_win:
                 DrawGameGrid(grid, zoom);
                 DrawCircle(screen_width/2, screen_height/2, 100, GREEN);
-                DrawTextButton(&restart_button);
+                DrawTextButton(&restart_button, screen_width, screen_height);
                 break;
 
             case s_game_over:
                 DrawGameGrid(grid, zoom);
                 DrawCircle(screen_width/2, screen_height/2, 100, RED);
-                DrawTextButton(&restart_button);
+                DrawTextButton(&restart_button, screen_width, screen_height);
                 break;
 
             default:

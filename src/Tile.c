@@ -111,11 +111,12 @@ void DrawTile(Tile* tile, int font_size, int scale, float zoom)
             tile->button.rec.height * scale * zoom 
         };
 
-        // Calculate character position for centering
+        // Calculate text position for centering
         int zoomed_font_size = font_size * zoom;
         int textWidth = MeasureText(number, zoomed_font_size);
         int textX = dest.x + (dest.width - textWidth) / 2;
         int textY = dest.y + (dest.height - zoomed_font_size) / 2;
+
         // Draw the character
         DrawText(number, textX, textY, zoomed_font_size, text_color); 
     }

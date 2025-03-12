@@ -107,6 +107,7 @@ GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMap
 
     // Construct GameGrid
     GameGrid* gameGrid = (GameGrid*)malloc(sizeof(GameGrid));
+    if (gameGrid == NULL) { printf("Memory allocation for gameGrid failed!\n"); exit(1); }
     gameGrid->tiles = grid;
     gameGrid->cols = grid_cols;
     gameGrid->rows = grid_cols;

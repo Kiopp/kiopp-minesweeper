@@ -2,7 +2,7 @@
 #include "raylib.h"
 #include <string.h>
 
-TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], int font_size) 
+TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], int font_size, int padding) 
 {
     // Declare new Button
     TextButton button;
@@ -13,12 +13,11 @@ TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], in
     button.text_width = MeasureText(button.text, button.font_size);
     button.button_color = GRAY;
     button.button_pressed = 0;
-
-    int padding = 20;
+    button.text_padding = padding;
 
     button.rec = (Rectangle){
-        (float)screenWidth/2 - (float)button.text_width/2 - (float)padding/2, 
-        (float)screenHeight/2 - (float)font_size/2 - (float)padding/2, 
+        0, 
+        0, 
         button.text_width + padding, 
         font_size + padding
         };
@@ -93,10 +92,16 @@ void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera)
     }
 }
 
-void DrawTextButton(TextButton* button)
+void DrawTextButton(TextButton* button, int screen_width, int screen_height)
 {
+    // Update button position
+    button->rec.x = (float)screen_width/2 - (float)button->text_width/2 - (float)button->text_padding/2;
+    button->rec.y = (float)screen_height/2 - (float)button->font_size/2 - (float)button->text_padding/2;
+
+    // Draw button
     DrawRectangleRec(button->rec, button->button_color);
 
+    // Draw text
     int text_x = button->rec.x + (button->rec.width - button->text_width) / 2;
     int text_y = button->rec.y + (button->rec.height - button->font_size) / 2;
     DrawText(
