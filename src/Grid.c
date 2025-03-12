@@ -78,8 +78,8 @@ GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMap
                 textures->tileMap[1], 
                 type,
                 (Vector2){
-                                    start_x + x * (tile_size * scale), 
-                                    start_y + y * (tile_size * scale)
+                                    (long long)(start_x + x * (tile_size * scale)), 
+                                    (long long)(start_y + y * (tile_size * scale))
                                     }
                 );
         }
