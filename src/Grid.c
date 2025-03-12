@@ -110,7 +110,7 @@ GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMap
     if (gameGrid == NULL) { printf("Memory allocation for gameGrid failed!\n"); exit(1); }
     gameGrid->tiles = grid;
     gameGrid->cols = grid_cols;
-    gameGrid->rows = grid_cols;
+    gameGrid->rows = grid_rows;
     gameGrid->scale = scale;
     gameGrid->tile_size = tile_size;
     gameGrid->tile_font = tile_font;
