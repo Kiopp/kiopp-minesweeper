@@ -34,13 +34,13 @@ TileMapTexture SplitTileMap(Texture2D tilesheet)
     return tilemap_texture;
 }
 
-Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type, Vector2 position)
+Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type, Vector2 position, int dark_mode)
 {
     // Declare new tile
     Tile tile;
 
     // Assign values to tile
-    tile.button = CreateImageButton(screen_width, screen_height, width, height, image);
+    tile.button = CreateImageButton(screen_width, screen_height, width, height, image, dark_mode);
     tile.button.rec.x = position.x;
     tile.button.rec.y = position.y;
     tile.type = type;

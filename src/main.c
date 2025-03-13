@@ -93,7 +93,7 @@ void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* grid_size_input, 
     
 }
 
-void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButton* start_button, ToggleButton* darkmode_button, NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
+void ResetGame(int screen_width, int screen_height, int dark_mode, int* grid_settings, TextButton* start_button, ToggleButton* darkmode_button, NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
     int font_size = 30;
 
     // Start button
@@ -111,12 +111,13 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
     *darkmode_button = CreateToggleButton(
         screen_width, 
         screen_height, 
-        35, 
-        35, 
+        40, 
+        40, 
         0, 
         230, 
         font_size, 
-        btn_darkmode_text
+        btn_darkmode_text,
+        dark_mode
     );
 
     // Number boxes
@@ -181,7 +182,7 @@ int main()
     // Game setup
     enum gameState state = s_setup;
     Color background_color = RAYWHITE;
-    int isDarkMode = 0;
+    int is_dark_mode = 0;
 
     // Camera
     Camera2D camera = {
@@ -230,6 +231,7 @@ int main()
     ResetGame(
         screen_width, 
         screen_height, 
+        is_dark_mode,
         grid_settings,
         &button,
         &darkmode_button, 
@@ -271,11 +273,11 @@ int main()
                     if (darkmode_button.active) {
                         // Change colors to darkmode
                         background_color = DARKGRAY;
-                        isDarkMode = 1;
+                        is_dark_mode = 1;
                     } else {
                         // Change colors to lightmode
                         background_color = RAYWHITE;
-                        isDarkMode = 0;
+                        is_dark_mode = 0;
                     }
                 }
 
@@ -312,7 +314,8 @@ int main()
                         grid_rows, 
                         num_mines, 
                         scale, 
-                        tile_font
+                        tile_font,
+                        is_dark_mode
                         );
                 }
                 break;
@@ -375,6 +378,7 @@ int main()
                     ResetGame(
                         screen_width, 
                         screen_height, 
+                        is_dark_mode,
                         grid_settings,
                         &button,
                         &darkmode_button, 
@@ -395,6 +399,7 @@ int main()
                     ResetGame(
                         screen_width, 
                         screen_height, 
+                        is_dark_mode,
                         grid_settings,
                         &button,
                         &darkmode_button, 

@@ -19,6 +19,9 @@ typedef struct ImageButton {
     Color button_color;
     int button_pressed;
     int toggle_flag;
+    Color default_color;
+    Color hover_color;
+    Color active_color;
 } ImageButton;
 
 typedef struct ToggleButton {
@@ -40,8 +43,8 @@ typedef struct ToggleButton {
 } ToggleButton;
 
 TextButton CreateTextButton(int screen_width, int screen_height, char text[32], int font_size, int padding);
-ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image);
-ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_width, int button_height, int x_offset, int y_offset, int font_size, char* label);
+ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image, int dark_mode);
+ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_width, int button_height, int x_offset, int y_offset, int font_size, char* label, int previous_active_state);
 
 void HandleTextButtonPress(TextButton* btn);
 void HandleImageButtonPress(ImageButton* btn, int scale, Camera2D camera);

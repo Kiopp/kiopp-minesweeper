@@ -24,7 +24,7 @@ TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], in
     return button;
 }
 
-ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image) {
+ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image, int dark_mode) {
     // Declare new Button
     ImageButton button;
 
@@ -33,6 +33,16 @@ ImageButton CreateImageButton(int screen_width, int screen_height, int button_wi
     button.button_color = WHITE; // No image hue change
     button.button_pressed = 0;
     button.toggle_flag = 0;
+    if (dark_mode) {
+        button.default_color = LIGHTGRAY;
+        button.hover_color = (Color){ 150, 150, 150, 255 };
+        button.active_color = (Color){ 60, 60, 60, 255 };
+    } else {
+        button.default_color = WHITE;
+        button.hover_color = LIGHTGRAY;
+        button.active_color = DARKGRAY;
+    }
+    
 
     button.rec = (Rectangle){
         0, // Default position
@@ -44,7 +54,7 @@ ImageButton CreateImageButton(int screen_width, int screen_height, int button_wi
     return button;
 }
 
-ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_width, int button_height, int x_offset, int y_offset, int font_size, char* label){
+ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_width, int button_height, int x_offset, int y_offset, int font_size, char* label, int previous_active_state){
     // Declare new Button
     ToggleButton btn;
 
@@ -59,7 +69,7 @@ ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_
     // Init Button values
     btn.button_color = GRAY;
     btn.button_pressed = 0;
-    btn.active = 0;
+    btn.active = previous_active_state;
     btn.x_offset = x_offset;
     btn.y_offset = y_offset;
 
@@ -94,11 +104,12 @@ void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera){
         button->rec.width * scale * camera.zoom, 
         button->rec.height * scale * camera.zoom
     };
+
     if (CheckCollisionPointRec(mouse_pos, dest)) {
-        button->button_color = LIGHTGRAY;
+        button->button_color = button->hover_color;
         // Left mouse button click
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            button->button_color = DARKGRAY;
+            button->button_color = button->active_color;
         }
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
             button->button_pressed = 1;
@@ -106,13 +117,13 @@ void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera){
 
         // Right mouse button click
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            button->button_color = DARKGRAY;
+            button->button_color = button->active_color;
         }
         if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
             button->toggle_flag = 1;
         }
     } else {
-        button->button_color = WHITE;
+        button->button_color = button->default_color;
     }
 }
 

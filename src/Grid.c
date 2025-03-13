@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 
-GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font)
+GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font, int isDarkMode)
 {
     // Allocate TileGrid memory
     Tile** grid = (Tile**)malloc(sizeof(Tile*)*grid_cols);
@@ -80,7 +80,8 @@ GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMap
                 (Vector2){
                                     (long long)(start_x + x * (tile_size * scale)), 
                                     (long long)(start_y + y * (tile_size * scale))
-                                    }
+                                    },
+                isDarkMode
                 );
         }
     }
