@@ -93,8 +93,9 @@ void UpdateAllNumberBox(NumberBox* num_mines_input, NumberBox* grid_size_input, 
     
 }
 
-void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButton* start_button, NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
-    
+void ResetGame(int screen_width, int screen_height, int dark_mode, int* grid_settings, TextButton* start_button, ToggleButton* darkmode_button, NumberBox* num_mines_input, NumberBox* grid_size_input, NumberBox* scale_input){
+    int font_size = 30;
+
     // Start button
     char btn_text[32] = "Start";
     *start_button = CreateTextButton( 
@@ -105,8 +106,21 @@ void ResetGame(int screen_width, int screen_height, int* grid_settings, TextButt
         20
         );
 
+    // Darkmode toggle button
+    char btn_darkmode_text[32] = "Darkmode";
+    *darkmode_button = CreateToggleButton(
+        screen_width, 
+        screen_height, 
+        40, 
+        40, 
+        0, 
+        230, 
+        font_size, 
+        btn_darkmode_text,
+        dark_mode
+    );
+
     // Number boxes
-    int font_size = 30;
     int row1_offset = 120;
     int row2_offset = 220;
 
@@ -167,6 +181,8 @@ int main()
 
     // Game setup
     enum gameState state = s_setup;
+    Color background_color = RAYWHITE;
+    int is_dark_mode = 0;
 
     // Camera
     Camera2D camera = {
@@ -184,6 +200,7 @@ int main()
     char btn_restart_text[32] = "Retry";
     TextButton button;
     TextButton restart_button;
+    ToggleButton darkmode_button;
 
     // Tile
     Image image = { 
@@ -214,8 +231,10 @@ int main()
     ResetGame(
         screen_width, 
         screen_height, 
+        is_dark_mode,
         grid_settings,
-        &button, 
+        &button,
+        &darkmode_button, 
         &num_mines_input, 
         &grid_size_input, 
         &scale_input
@@ -244,7 +263,23 @@ int main()
         switch (state) {
             case s_setup:
                 HandleTextButtonPress(&button);
+                HandleToggleButtonPress(&darkmode_button);
                 UpdateAllNumberBox(&num_mines_input, &grid_size_input, &scale_input);
+
+                if (darkmode_button.button_pressed) {
+                    darkmode_button.button_pressed = 0;
+                    darkmode_button.active = !darkmode_button.active;
+
+                    if (darkmode_button.active) {
+                        // Change colors to darkmode
+                        background_color = DARKGRAY;
+                        is_dark_mode = 1;
+                    } else {
+                        // Change colors to lightmode
+                        background_color = RAYWHITE;
+                        is_dark_mode = 0;
+                    }
+                }
 
                 if (button.button_pressed) {
                     // Grid settings
@@ -279,7 +314,8 @@ int main()
                         grid_rows, 
                         num_mines, 
                         scale, 
-                        tile_font
+                        tile_font,
+                        is_dark_mode
                         );
                 }
                 break;
@@ -342,8 +378,10 @@ int main()
                     ResetGame(
                         screen_width, 
                         screen_height, 
+                        is_dark_mode,
                         grid_settings,
-                        &button, 
+                        &button,
+                        &darkmode_button, 
                         &num_mines_input, 
                         &grid_size_input, 
                         &scale_input
@@ -361,8 +399,10 @@ int main()
                     ResetGame(
                         screen_width, 
                         screen_height, 
+                        is_dark_mode,
                         grid_settings,
-                        &button, 
+                        &button,
+                        &darkmode_button, 
                         &num_mines_input, 
                         &grid_size_input, 
                         &scale_input
@@ -375,7 +415,7 @@ int main()
         }
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(background_color);
 
         // Drawing state mashine
         switch (state) 
@@ -385,6 +425,7 @@ int main()
                 DrawNumberBox(&num_mines_input, screen_width, screen_height);
                 DrawNumberBox(&grid_size_input, screen_width, screen_height);
                 DrawNumberBox(&scale_input, screen_width, screen_height);
+                DrawToggleButton(&darkmode_button, screen_width, screen_height);
                 break;
 
             case s_playing:

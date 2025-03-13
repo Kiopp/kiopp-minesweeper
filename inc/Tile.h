@@ -20,6 +20,7 @@ typedef struct Tile {
     enum tile_type type;
     enum tile_state state;
     int mine_num;
+    int dark_mode;
 } Tile;
 
 typedef struct TileMapTexture{
@@ -31,7 +32,7 @@ TileMapTexture SplitTileMap(Texture2D tilemap);
 
 Texture2D* GetTileImage(Tile* tile, TileMapTexture* textures);
 
-Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type, Vector2 position);
+Tile CreateTile(int screen_width, int screen_height, int width, int height, Texture2D image, enum tile_type type, Vector2 position, int dark_mode);
 
 void DrawTile(Tile* tile, int font_size, int scale, float zoom);
 
