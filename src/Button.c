@@ -2,8 +2,7 @@
 #include "raylib.h"
 #include <string.h>
 
-TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], int font_size, int padding) 
-{
+TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], int font_size, int padding) {
     // Declare new Button
     TextButton button;
 
@@ -25,8 +24,7 @@ TextButton CreateTextButton(int screenWidth, int screenHeight, char text[32], in
     return button;
 }
 
-ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image) 
-{
+ImageButton CreateImageButton(int screen_width, int screen_height, int button_width, int button_height, Texture2D image) {
     // Declare new Button
     ImageButton button;
 
@@ -46,8 +44,35 @@ ImageButton CreateImageButton(int screen_width, int screen_height, int button_wi
     return button;
 }
 
-void HandleTextButtonPress(TextButton* button)
-{
+ToggleButton CreateToggleButton(int screen_width, int screen_height, int button_width, int button_height, int x_offset, int y_offset, int font_size, char* label){
+    // Declare new Button
+    ToggleButton btn;
+
+    // Init Rectangle
+    btn.rec = (Rectangle){
+        (float)(screen_width-MeasureText(label, font_size))/2 + x_offset, 
+        (float)(screen_height-button_height)/2 + y_offset, 
+        button_width, 
+        button_height
+        };
+
+    // Init Button values
+    btn.button_color = GRAY;
+    btn.button_pressed = 0;
+    btn.active = 0;
+    btn.x_offset = x_offset;
+    btn.y_offset = y_offset;
+
+    // Label text setup
+    strcpy(btn.label, label);
+    btn.label_max_len = 49;
+    btn.label_letter_count = strlen(btn.label);
+    btn.font_size = font_size;
+
+    return btn;
+}
+
+void HandleTextButtonPress(TextButton* button){
     if (CheckCollisionPointRec(GetMousePosition(), button->rec)) {
         button->button_color = LIGHTGRAY;
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -61,8 +86,7 @@ void HandleTextButtonPress(TextButton* button)
     }
 }
 
-void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera)
-{
+void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera){
     Vector2 mouse_pos = GetScreenToWorld2D(GetMousePosition(), camera); // Transform mouse position
     Rectangle dest = (Rectangle){ 
         button->rec.x * camera.zoom, 
@@ -92,8 +116,21 @@ void HandleImageButtonPress(ImageButton* button, int scale, Camera2D camera)
     }
 }
 
-void DrawTextButton(TextButton* button, int screen_width, int screen_height)
-{
+void HandleToggleButtonPress(ToggleButton* btn){
+    if (CheckCollisionPointRec(GetMousePosition(), btn->rec)) {
+        btn->button_color = LIGHTGRAY;
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            btn->button_color = DARKGRAY;
+        }
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            btn->button_pressed = 1;
+        }
+    } else {
+        btn->button_color = GRAY;
+    }
+}
+
+void DrawTextButton(TextButton* button, int screen_width, int screen_height){
     // Update button position
     button->rec.x = (float)screen_width/2 - (float)button->text_width/2 - (float)button->text_padding/2;
     button->rec.y = (float)screen_height/2 - (float)button->font_size/2 - (float)button->text_padding/2;
@@ -110,11 +147,10 @@ void DrawTextButton(TextButton* button, int screen_width, int screen_height)
         text_y, 
         button->font_size, 
         BLACK
-        );
+    );
 }
 
-void DrawImageButton(ImageButton* button, int scale, float zoom)
-{
+void DrawImageButton(ImageButton* button, int scale, float zoom){
     Rectangle dest = (Rectangle){ 
         button->rec.x * zoom, 
         button->rec.y * zoom, 
@@ -129,4 +165,31 @@ void DrawImageButton(ImageButton* button, int scale, float zoom)
         0.0f,
         button->button_color
         );
+}
+
+void DrawToggleButton(ToggleButton* btn, int screen_width, int screen_height){
+    // Update button position
+    btn->rec.x = (float)(screen_width - btn->rec.width)/2 + (float)btn->x_offset;
+    btn->rec.y = (float)(screen_height - btn->rec.height)/2 + (float)btn->y_offset;
+
+    // Draw button
+    DrawRectangleRec(btn->rec, btn->button_color);
+
+    Color btn_active_col = BLACK;
+    if (btn->active) {
+        btn_active_col = GREEN;
+    } else {
+        btn_active_col = RED;
+    }
+    DrawCircle(btn->rec.x + btn->rec.width/2, btn->rec.y + btn->rec.width/2, btn->rec.width/2 - 2, DARKGRAY);
+    DrawCircle(btn->rec.x + btn->rec.width/2, btn->rec.y + btn->rec.width/2, btn->rec.width/2 - 3.5, btn_active_col);
+
+    // Draw label
+    DrawText(
+        btn->label, 
+        (int)btn->rec.x + 10 - MeasureText(btn->label, btn->font_size)/2, 
+        (int)btn->rec.y - btn->font_size - 5,
+        btn->font_size, 
+        BLACK
+    );
 }
