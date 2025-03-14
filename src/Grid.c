@@ -5,8 +5,7 @@
 #include <stdio.h>
 #include <time.h>
 
-GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font, int isDarkMode)
-{
+GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font, int isDarkMode) {
     // Allocate TileGrid memory
     Tile** grid = (Tile**)malloc(sizeof(Tile*)*grid_cols);
     if (grid == NULL) { printf("Memory allocation for grid failed!\n"); exit(1); }
@@ -123,6 +122,18 @@ GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMap
     gameGrid->game_win = 0;
 
     return gameGrid;
+}
+
+void DestroyGrid(GameGrid* grid) {
+    if (grid) {
+        if (grid->tiles) {
+            for (int i = 0; i < grid->cols; i++) {
+                free(grid->tiles[i]);
+            }
+            free(grid->tiles);
+        }
+        free(grid);
+    }
 }
 
 void ToggleFlag(Tile* tile, TileMapTexture* textures){

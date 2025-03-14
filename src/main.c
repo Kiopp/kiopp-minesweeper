@@ -257,7 +257,6 @@ int main()
             screen_width = GetScreenWidth();
             screen_height = GetScreenHeight();
         }
-        
 
         // Update state mashine
         switch (state) {
@@ -305,6 +304,10 @@ int main()
                     state = s_playing;
 
                     // Generate grid
+                    if (grid != NULL) {
+                        DestroyGrid(grid);
+                    }
+                    
                     grid = CreateGrid(
                         screen_width, 
                         screen_height, 

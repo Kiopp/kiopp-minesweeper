@@ -21,6 +21,8 @@ typedef struct GameGrid {
 
 GameGrid* CreateGrid(int screen_width, int screen_height, int tile_size, TileMapTexture* textures, int grid_cols, int grid_rows, int num_mines, int scale, int tile_font, int isDarkmode);
 
+void DestroyGrid(GameGrid* grid);
+
 void HandleGridTileButtons(GameGrid* grid, Camera2D camera);
 
 void HandleGridTileButtonClicked(GameGrid* grid, TileMapTexture* textures);
