@@ -5,15 +5,17 @@ It's just a minesweeper clone I made for fun.
 Compilation is made easy and platform independant using cmake. Raylib is included in the compilation and therefore is not required to be installed on your system. Simply follow these steps:
 
 ### Linux
-You can run the initial build and compilation using the included LinuxCompile.sh bash script. I use the following commands to build the project:
+You can compile and run using the included LinuxCompile.sh bash script. Or alternatively you can do it manually by using the following commands to build the project:
 ```
 mkdir build
 cd build
 cmake ..
+make
+./kiopp_mine
 ```
 Then to compile I simply run:
 ```
-make && ./kiopp_mine
+./LinuxCompile
 ```
 ### Windows
 To build the project on windows I recommend using cmake GUI with Visual Studio.
