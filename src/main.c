@@ -7,6 +7,7 @@
 #include "TextBox.h"
 #include "tilesheet.h"
 #include <stdio.h>
+#include <string.h>
 
 enum gameState {
     s_setup,
@@ -219,7 +220,7 @@ int main()
     NumberBox scale_input;
 
     // Grid
-    GameGrid* grid;
+    GameGrid* grid = NULL;
     int tile_size = tilesheet.width/2;
     int grid_cols = 1;
     int grid_rows = 1;
@@ -302,7 +303,6 @@ int main()
                         break;
                     }
                     state = s_playing;
-
                     // Generate grid
                     if (grid != NULL) {
                         DestroyGrid(grid);
