@@ -11,3 +11,6 @@ cmake ..
 
 # Compile program using make
 make
+
+# Run program
+./kiopp_mine
